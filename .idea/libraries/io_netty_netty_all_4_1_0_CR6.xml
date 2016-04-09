@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="io.netty:netty-all:4.1.0.CR6" type="repository">
+    <properties maven-id="io.netty:netty-all:4.1.0.CR6" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/netty-all-4.1.0.CR6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/tools.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_openfms" default="compile.module.openfms">
+  <dirname property="module.openfms.basedir" file="${ant.file.module_openfms}"/>
+  
+  <property name="module.jdk.home.openfms" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.openfms" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.openfms" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.openfms" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="openfms.output.dir" value="${module.openfms.basedir}/out/production/OpenFMS"/>
+  <property name="openfms.testoutput.dir" value="${module.openfms.basedir}/out/test/OpenFMS"/>
+  
+  <path id="openfms.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="openfms.module.production.classpath">
+    <path refid="${module.jdk.classpath.openfms}"/>
+    <path refid="library.io.netty:netty-all:4.1.0.cr6.classpath"/>
+  </path>
+  
+  <path id="openfms.runtime.production.module.classpath">
+    <pathelement location="${openfms.output.dir}"/>
+    <path refid="library.io.netty:netty-all:4.1.0.cr6.classpath"/>
+  </path>
+  
+  <path id="openfms.module.classpath">
+    <path refid="${module.jdk.classpath.openfms}"/>
+    <pathelement location="${openfms.output.dir}"/>
+    <path refid="library.io.netty:netty-all:4.1.0.cr6.classpath"/>
+  </path>
+  
+  <path id="openfms.runtime.module.classpath">
+    <pathelement location="${openfms.testoutput.dir}"/>
+    <pathelement location="${openfms.output.dir}"/>
+    <path refid="library.io.netty:netty-all:4.1.0.cr6.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.openfms">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.openfms">
+    <patternset refid="excluded.from.module.openfms"/>
+  </patternset>
+  
+  <path id="openfms.module.sourcepath">
+    <dirset dir="${module.openfms.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.openfms" depends="compile.module.openfms.production,compile.module.openfms.tests" description="Compile module OpenFMS"/>
+  
+  <target name="compile.module.openfms.production" depends="register.custom.compilers" description="Compile module OpenFMS; production classes">
+    <mkdir dir="${openfms.output.dir}"/>
+    <javac2 destdir="${openfms.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.openfms}/javac">
+      <compilerarg line="${compiler.args.openfms}"/>
+      <bootclasspath refid="openfms.module.bootclasspath"/>
+      <classpath refid="openfms.module.production.classpath"/>
+      <src refid="openfms.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.openfms"/>
+    </javac2>
+    
+    <copy todir="${openfms.output.dir}">
+      <fileset dir="${module.openfms.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.openfms.tests" depends="register.custom.compilers,compile.module.openfms.production" description="compile module OpenFMS; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.openfms" description="cleanup module">
+    <delete dir="${openfms.output.dir}"/>
+    <delete dir="${openfms.testoutput.dir}"/>
+  </target>
+</project>
